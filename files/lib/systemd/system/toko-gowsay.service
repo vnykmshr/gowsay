@@ -1,0 +1,13 @@
+[Unit]
+Description=Job that runs the gowsay service
+
+[Service]
+Type=simple
+Environment=LOGDIR=/var/log/gowsay
+Environment=TKPENV=production
+ExecStartPre=/usr/bin/mkdir -p ${LOGDIR}
+ExecStart=/usr/local/bin/gowsay -l ${LOGDIR}/gowsay.access.log -e ${LOGDIR}/gowsay.error.log
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
