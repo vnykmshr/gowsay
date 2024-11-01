@@ -60,8 +60,8 @@ tidy:
 ## build: build the application
 .PHONY: build
 build:
-	# Include additional build steps, like TypeScript, SCSS or Tailwind compilation here...
-	go build -o=./bin/${binary_name} ${main_package_path}
+	go build -ldflags "-X 'main.version=`git log -1 --pretty=format:"%h"`'" -v \
+	   -o=./bin/${binary_name} ${main_package_path}
 
 ## run: run the  application
 .PHONY: run
