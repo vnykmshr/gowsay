@@ -1,6 +1,8 @@
 ### Go ###
 # Binaries for programs and plugins
 /files/etc/gowsay/gowsay.production.ini
+/bin/gowsay
+/bin/linux_amd64
 /gowsay
 *.exe
 *.exe~

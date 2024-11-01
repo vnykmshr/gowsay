@@ -91,7 +91,5 @@ push: confirm audit no-dirty
 .PHONY: production/deploy
 production/deploy: confirm audit no-dirty
 	GOOS=linux GOARCH=amd64 go build -ldflags='-s' -o=./bin/linux_amd64/${binary_name} ${main_package_path}
-	@if [ -x "$(command -v upx)" ]; then \
-        upx -5 ./bin/linux_amd64/${binary_name} \
-    fi
+    # upx -5 ./bin/linux_amd64/${binary_name} \
     # Include additional deployment steps here...
