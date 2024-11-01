@@ -60,7 +60,7 @@ func (hlm *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 		response := SlackResponse{
 			ResponseType: ResponseEphemeral,
 			Text:         GetUsageString(),
-			Attachments:  []Attachment{Attachment{Text: GetHelpString()}},
+			Attachments:  []Attachment{{Text: GetHelpString()}},
 		}
 
 		writeJSON(w, response)
