@@ -11,7 +11,7 @@ import (
 )
 
 // NewModule create new module
-func NewModule() (*Module, error) {
+func NewModule() *Module {
 	var cfg Config
 	ok := logging.ReadModuleConfig(&cfg, "/etc/gowsay", "gowsay") || logging.ReadModuleConfig(&cfg, "files/etc/gowsay", "gowsay")
 	if !ok {
@@ -21,7 +21,7 @@ func NewModule() (*Module, error) {
 
 	return &Module{
 		cfg: &cfg,
-	}, nil
+	}
 }
 
 func getDefaultConfig() Config {

@@ -19,10 +19,7 @@ func main() {
 	// XXX: set logging.buildHash for app version
 	logging.LogInit()
 
-	m, err := api.NewModule()
-	if err != nil {
-		log.Fatalln(err)
-	}
+	m := api.NewModule()
 
 	http.HandleFunc("/", m.Gowsay)
 	http.HandleFunc("/say", m.Gowsay)
