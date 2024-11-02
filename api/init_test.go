@@ -20,7 +20,7 @@ func TestNewModule(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if m, err := NewModule(); (err != nil) != tt.wantErr {
+			if m := NewModule(); m == nil {
 				t.Errorf("NewModule() m = %v, wantErr %v", m, tt.wantErr)
 			}
 		})
