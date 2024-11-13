@@ -1,4 +1,4 @@
-module github.com/bmishra/gowsay
+module github.com/vnykmshr/gowsay
 
 go 1.21
 

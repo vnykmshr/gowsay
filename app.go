@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/bmishra/gowsay/api"
+	"github.com/vnykmshr/gowsay/api"
 	"gopkg.in/tokopedia/grace.v1"
 	"gopkg.in/tokopedia/logging.v1"
 )
