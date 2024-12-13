@@ -13,7 +13,7 @@ import (
 
 var version = "devel"
 
-func main() {
+func main1() {
 	flag.Parse()
 
 	// XXX: set logging.buildHash for app version
