@@ -1,0 +1,5 @@
+` {{.Thoughts}}
+  {{.Thoughts}}
+   {{.Thoughts}} >()_
+      (__)__ _
+`

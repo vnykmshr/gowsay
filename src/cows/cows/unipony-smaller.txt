@@ -1,0 +1,9 @@
+`   {{.Thoughts}}        \
+    {{.Thoughts}}        \
+     {{.Thoughts}}       _\^
+      {{.Thoughts}}    _- {{.Eyes}}\
+           \---- \______
+            {{.Tongue}}   \       )\
+                ||-----||  \
+                ||     ||
+`

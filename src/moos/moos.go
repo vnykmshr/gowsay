@@ -61,12 +61,3 @@ func init() {
 func GetRandomMoo() string {
 	return moos[rnd.Intn(len(moos))]
 }
-
-func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}

@@ -1,0 +1,10 @@
+`          {{.Thoughts}}      (__)
+           {{.Thoughts}}     /{{.Eyes}}|
+            {{.Thoughts}}   (_"_)*+++++++++*
+                   //I#\\\\\\\\I\
+                   I[I|I|||||I I '
+                   I'I'///'' I I
+                   I I       I I
+                   ~ ~       ~ ~
+                     Scowleton
+`

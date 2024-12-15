@@ -1,9 +1,5 @@
 package faces
 
-import (
-	"fmt"
-)
-
 type Face struct {
 	Eyes     string
 	Tongue   string
@@ -38,7 +34,7 @@ func New(cow, mood string) (*Face, error) {
 	case "young":
 		f.Eyes = ".."
 	default:
-		fmt.Printf("mood not found: %s, proceeding with default mood\n", mood)
+		// proceed with default mood
 	}
 
 	return f, nil

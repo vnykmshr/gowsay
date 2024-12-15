@@ -8,6 +8,7 @@ const (
 	ActionHelp     = "help"
 	ActionSurprise = "surprise"
 	ActionDefault  = ActionSay
+	ActionRandom   = "random"
 
 	CommandMoo = "/moo"
 

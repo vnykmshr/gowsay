@@ -1,0 +1,9 @@
+`        {{.Thoughts}}    ,-^-.
+         {{.Thoughts}}   !oYo!
+          {{.Thoughts}} /./=\.\______
+               ##        )\/\
+                ||-----w||
+                ||      ||
+
+               Cowth Vader
+`

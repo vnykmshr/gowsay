@@ -5,18 +5,17 @@ import (
 	"fmt"
 	"math/rand"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
-
-	"github.com/vnykmshr/gowsay/src/utils"
 )
 
 var (
 	// Embed all cow files
 	//go:embed cows/*.txt
-	cowsFS embed.FS
-	// Use a single random source for the package
-	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
+	cowsFS        embed.FS
+	rnd           = rand.New(rand.NewSource(time.Now().UnixNano()))
+	cowNamesCache []string
 )
 
 type Cow struct {
@@ -35,14 +34,17 @@ func GetRandomCow() (*Cow, error) {
 
 // GetRandomCowName returns a random cow name from available cows
 func GetRandomCowName() (string, error) {
-	fileNames, err := GetCowNames()
-	if err != nil {
-		return "", fmt.Errorf("unable to get cow names: %w", err)
+	if cowNamesCache == nil {
+		var err error
+		cowNamesCache, err = GetCowNames()
+		if err != nil {
+			return "", err
+		}
 	}
-	if len(fileNames) == 0 {
+	if len(cowNamesCache) == 0 {
 		return "", fmt.Errorf("no cow files available")
 	}
-	return fileNames[rnd.Intn(len(fileNames))], nil
+	return cowNamesCache[rnd.Intn(len(cowNamesCache))], nil
 }
 
 // GetCowNames returns a list of all cow names (without extensions)
@@ -80,6 +82,6 @@ func getCowArt(name string) (string, error) {
 		return "", fmt.Errorf("unable to read cow file %q: %w", name, err)
 	}
 
-	art := utils.RemoveBackticks(strings.TrimSpace(string(contents)))
+	art := regexp.MustCompile("(^`|`$)").ReplaceAllString(string(contents), "")
 	return art, nil
 }

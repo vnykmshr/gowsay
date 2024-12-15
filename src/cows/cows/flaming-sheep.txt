@@ -1,0 +1,11 @@
+`  {{.Thoughts}}            .    .     .
+   {{.Thoughts}}      .  . .     '  ,
+    {{.Thoughts}}    .; .  : .' :  :  : .
+     {{.Thoughts}}   i..': i' i.i.,i  i .
+      {{.Thoughts}}   ',--.|i |i|ii|ii|i:
+           U{{.Eyes}}U\.'@@@@@@'.||'
+           \__/(@@@@@@@@@@)'
+                (@@@@@@@@)
+                'YY~~~~YY'
+                 ||    ||
+`

@@ -1,0 +1,11 @@
+`  {{.Thoughts}}
+   {{.Thoughts}}          .
+       ___   //
+     {~._.~}//
+      ( Y )K/
+     ()~*~()
+     (_)-(_)
+     Luke
+     Skywalker
+     koala
+`
