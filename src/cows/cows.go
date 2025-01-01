@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"math/rand"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"time"
+
+	"github.com/vnykmshr/gowsay/src/utils"
 )
 
 var (
@@ -82,6 +83,6 @@ func getCowArt(name string) (string, error) {
 		return "", fmt.Errorf("unable to read cow file %q: %w", name, err)
 	}
 
-	art := regexp.MustCompile("(^`|`$)").ReplaceAllString(string(contents), "")
+	art := utils.RemoveBackticks(strings.TrimSpace(string(contents)))
 	return art, nil
 }
