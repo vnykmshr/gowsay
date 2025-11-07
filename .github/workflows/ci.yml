@@ -39,7 +39,7 @@ jobs:
 
     - name: Upload coverage
       if: matrix.go-version == '1.23'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: coverage
         path: coverage.out
@@ -116,7 +116,7 @@ jobs:
         GOOS=darwin GOARCH=arm64 go build -ldflags='-s' -o=./bin/gowsay-darwin-arm64 ./
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: binaries
         path: bin/gowsay-*
