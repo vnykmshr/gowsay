@@ -197,6 +197,13 @@ curl -X POST 'https://gowsay.vnykmshr.com/say' \
   --data-urlencode 'text=Hello World'
 ```
 
+## Documentation
+
+- [Architecture Overview](docs/ARCHITECTURE.md) - System design and package structure
+- [Contributing Guide](CONTRIBUTING.md) - How to contribute
+- [Technical Blog](docs/TECHNICAL_BLOG.md) - Deep dive into design decisions
+- [Security Policy](SECURITY.md) - Reporting vulnerabilities
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details
