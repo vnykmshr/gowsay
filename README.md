@@ -40,6 +40,43 @@ gowsay -l
 gowsay --help
 ```
 
+### HTTP API
+
+Start the server:
+```bash
+./bin/gowsay serve
+# or
+PORT=8080 ./bin/gowsay serve
+```
+
+**Endpoints:**
+
+```bash
+# Generate cowsay (query params)
+curl 'http://localhost:9000/api/moo?text=Hello&cow=dragon&action=say'
+
+# Generate cowsay (JSON)
+curl -X POST http://localhost:9000/api/moo \
+  -H 'Content-Type: application/json' \
+  -d '{"text":"Hello","cow":"dragon","mood":"wired"}'
+
+# List all cows
+curl http://localhost:9000/api/cows
+
+# List all moods
+curl http://localhost:9000/api/moods
+
+# Health check
+curl http://localhost:9000/health
+```
+
+**API Parameters:**
+- `text` - Message to display (required)
+- `cow` - Cow name (default: "default", or "random")
+- `mood` - Mood name (optional, or "random")
+- `action` - "say" or "think" (default: "say")
+- `columns` - Text width for wrapping (default: 40)
+
 ### Slack Command
 
 Deployed at https://gowsay.vnykmshr.com/say
