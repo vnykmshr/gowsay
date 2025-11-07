@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -9,25 +10,6 @@ import (
 
 	"github.com/vnykmshr/gowsay/cow"
 )
-
-func TestNewModule(t *testing.T) {
-	tests := []struct {
-		name    string
-		wantErr bool
-	}{
-		{
-			name:    "t1",
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if m := NewModule(); m == nil {
-				t.Errorf("NewModule() m = %v, wantErr %v", m, tt.wantErr)
-			}
-		})
-	}
-}
 
 func TestModule_Gowsay(t *testing.T) {
 	type args struct {
@@ -157,75 +139,64 @@ func TestModule_motd(t *testing.T) {
 	type args struct {
 		w http.ResponseWriter
 	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		{
-			name: "t1",
-			args: args{
-				w: httptest.NewRecorder(),
-			},
-		},
+	// Simple smoke test - motd should write output without error
+	m := &Module{
+		token:   "test",
+		columns: 40,
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			m := &Module{
-				token:   "test",
-				columns: 40,
-			}
-			m.motd(tt.args.w)
-		})
+	w := httptest.NewRecorder()
+	m.motd(w)
+
+	if w.Code == 0 {
+		t.Error("motd should set status code")
 	}
 }
 
 func Test_writeJSON(t *testing.T) {
-	type args struct {
-		w        http.ResponseWriter
-		response interface{}
+	w := httptest.NewRecorder()
+	response := map[string]string{"test": "data"}
+
+	writeJSON(w, response, http.StatusOK)
+
+	// Verify content type header
+	if got := w.Header().Get(FieldContentType); got != ValueApplicationJSON {
+		t.Errorf("Content-Type = %s, want %s", got, ValueApplicationJSON)
 	}
-	tests := []struct {
-		name string
-		args args
-	}{
-		{
-			name: "t1",
-			args: args{
-				w:        httptest.NewRecorder(),
-				response: "test",
-			},
-		},
+
+	// Verify status code
+	if w.Code != http.StatusOK {
+		t.Errorf("Status = %d, want %d", w.Code, http.StatusOK)
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			writeJSON(tt.args.w, tt.args.response, http.StatusOK)
-			if got, ok := tt.args.w.Header()[FieldContentType]; !ok || !reflect.DeepEqual(got, []string{ValueApplicationJSON}) {
-				t.Errorf("writeJSON() Header: %s: got: %s, want: %s", FieldContentType, got, []string{ValueApplicationJSON})
-			}
-		})
+
+	// Verify valid JSON response
+	var result map[string]string
+	if err := json.NewDecoder(w.Body).Decode(&result); err != nil {
+		t.Errorf("Response should be valid JSON: %v", err)
 	}
 }
 
 func Test_sanitize(t *testing.T) {
-	type args struct {
-		s []string
-	}
 	tests := []struct {
-		name string
-		args args
-		want []string
+		name  string
+		input []string
+		want  []string
 	}{
 		{
-			name: "t1",
-			args: args{
-				s: []string{"abc", " ", " abc"},
-			},
-			want: []string{"abc", " abc"},
+			name:  "removes_whitespace_only_entries",
+			input: []string{"abc", " ", " abc"},
+			want:  []string{"abc", " abc"},
+		},
+		{
+			name:  "preserves_all_non_whitespace",
+			input: []string{"hello", "world"},
+			want:  []string{"hello", "world"},
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := sanitize(tt.args.s); !reflect.DeepEqual(got, tt.want) {
+			got := sanitize(tt.input)
+			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("sanitize() = %v, want %v", got, tt.want)
 			}
 		})
@@ -264,16 +235,12 @@ func Test_NewModuleDefaults(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Set up env vars
+			// Set up env vars (t.Setenv auto-restores after test)
 			if tt.tokenEnv != "" {
-				os.Setenv("GOWSAY_TOKEN", tt.tokenEnv)
-			} else {
-				os.Unsetenv("GOWSAY_TOKEN")
+				t.Setenv("GOWSAY_TOKEN", tt.tokenEnv)
 			}
 			if tt.columnsEnv != "" {
-				os.Setenv("GOWSAY_COLUMNS", tt.columnsEnv)
-			} else {
-				os.Unsetenv("GOWSAY_COLUMNS")
+				t.Setenv("GOWSAY_COLUMNS", tt.columnsEnv)
 			}
 
 			got := NewModule()
@@ -283,10 +250,6 @@ func Test_NewModuleDefaults(t *testing.T) {
 			if got.columns != tt.wantColumns {
 				t.Errorf("NewModule().columns = %v, want %v", got.columns, tt.wantColumns)
 			}
-
-			// Clean up
-			os.Unsetenv("GOWSAY_TOKEN")
-			os.Unsetenv("GOWSAY_COLUMNS")
 		})
 	}
 }

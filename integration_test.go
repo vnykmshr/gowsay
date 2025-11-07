@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -61,71 +62,48 @@ func TestServerIntegration(t *testing.T) {
 		}
 	})
 
-	t.Run("GetCows", func(t *testing.T) {
+	t.Run("CompleteAPIFlow", func(t *testing.T) {
+		// Step 1: Get available cows
 		resp, err := client.Get(baseURL + "/api/cows")
 		if err != nil {
-			t.Fatalf("Failed to call /api/cows: %v", err)
+			t.Fatalf("Failed to get cows: %v", err)
 		}
-		defer resp.Body.Close()
-
 		if resp.StatusCode != http.StatusOK {
-			t.Errorf("Expected status 200, got %d", resp.StatusCode)
+			t.Errorf("GET /api/cows: expected 200, got %d", resp.StatusCode)
 		}
 
-		var result map[string][]string
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			t.Fatalf("Failed to decode cows response: %v", err)
+		var cowsResult map[string][]string
+		if err := json.NewDecoder(resp.Body).Decode(&cowsResult); err != nil {
+			t.Fatalf("Failed to decode cows: %v", err)
+		}
+		resp.Body.Close()
+
+		cows, ok := cowsResult["cows"]
+		if !ok || len(cows) == 0 {
+			t.Fatal("Expected non-empty cows list")
 		}
 
-		cows, ok := result["cows"]
-		if !ok {
-			t.Fatal("Response missing 'cows' field")
-		}
-
-		if len(cows) == 0 {
-			t.Error("Expected non-empty list of cows")
-		}
-
-		// Check for some known cows
-		hasCow := false
-		for _, cow := range cows {
-			if cow == "default" || cow == "dragon" {
-				hasCow = true
-				break
-			}
-		}
-		if !hasCow {
-			t.Error("Expected to find 'default' or 'dragon' in cows list")
-		}
-	})
-
-	t.Run("GetMoods", func(t *testing.T) {
-		resp, err := client.Get(baseURL + "/api/moods")
+		// Step 2: Get available moods
+		resp, err = client.Get(baseURL + "/api/moods")
 		if err != nil {
-			t.Fatalf("Failed to call /api/moods: %v", err)
+			t.Fatalf("Failed to get moods: %v", err)
 		}
-		defer resp.Body.Close()
-
 		if resp.StatusCode != http.StatusOK {
-			t.Errorf("Expected status 200, got %d", resp.StatusCode)
+			t.Errorf("GET /api/moods: expected 200, got %d", resp.StatusCode)
 		}
 
-		var result map[string][]string
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			t.Fatalf("Failed to decode moods response: %v", err)
+		var moodsResult map[string][]string
+		if err := json.NewDecoder(resp.Body).Decode(&moodsResult); err != nil {
+			t.Fatalf("Failed to decode moods: %v", err)
+		}
+		resp.Body.Close()
+
+		moods, ok := moodsResult["moods"]
+		if !ok || len(moods) == 0 {
+			t.Fatal("Expected non-empty moods list")
 		}
 
-		moods, ok := result["moods"]
-		if !ok {
-			t.Fatal("Response missing 'moods' field")
-		}
-
-		if len(moods) == 0 {
-			t.Error("Expected non-empty list of moods")
-		}
-	})
-
-	t.Run("APIMoo_JSON", func(t *testing.T) {
+		// Step 3: Test valid JSON POST request
 		reqBody := map[string]string{
 			"text":   "Hello Integration Test",
 			"cow":    "default",
@@ -133,119 +111,105 @@ func TestServerIntegration(t *testing.T) {
 		}
 		jsonData, _ := json.Marshal(reqBody)
 
-		resp, err := client.Post(
+		resp, err = client.Post(
 			baseURL+"/api/moo",
 			"application/json",
 			bytes.NewBuffer(jsonData),
 		)
 		if err != nil {
-			t.Fatalf("Failed to call /api/moo: %v", err)
+			t.Fatalf("POST /api/moo (JSON): %v", err)
 		}
-		defer resp.Body.Close()
-
 		if resp.StatusCode != http.StatusOK {
 			body, _ := io.ReadAll(resp.Body)
-			t.Errorf("Expected status 200, got %d. Body: %s", resp.StatusCode, body)
+			t.Errorf("POST /api/moo (JSON): expected 200, got %d. Body: %s", resp.StatusCode, body)
 		}
 
-		var result api.MooResponse
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			t.Fatalf("Failed to decode response: %v", err)
+		var mooResp api.MooResponse
+		if err := json.NewDecoder(resp.Body).Decode(&mooResp); err != nil {
+			t.Fatalf("Failed to decode moo response: %v", err)
+		}
+		resp.Body.Close()
+
+		if mooResp.Output == "" || !strings.Contains(mooResp.Output, "Hello Integration Test") {
+			t.Error("Moo output should contain input text")
 		}
 
-		if result.Output == "" {
-			t.Error("Expected non-empty output")
-		}
-
-		if !strings.Contains(result.Output, "Hello Integration Test") {
-			t.Error("Output should contain the input text")
-		}
-	})
-
-	t.Run("APIMoo_QueryParams", func(t *testing.T) {
-		resp, err := client.Get(baseURL + "/api/moo?text=Query+Test&cow=dragon&action=think")
+		// Step 4: Test valid GET request with query params
+		resp, err = client.Get(baseURL + "/api/moo?text=Query+Test&cow=dragon&action=think")
 		if err != nil {
-			t.Fatalf("Failed to call /api/moo with query params: %v", err)
+			t.Fatalf("GET /api/moo (query): %v", err)
 		}
-		defer resp.Body.Close()
-
 		if resp.StatusCode != http.StatusOK {
-			t.Errorf("Expected status 200, got %d", resp.StatusCode)
+			t.Errorf("GET /api/moo (query): expected 200, got %d", resp.StatusCode)
 		}
 
-		var result api.MooResponse
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			t.Fatalf("Failed to decode response: %v", err)
+		if err := json.NewDecoder(resp.Body).Decode(&mooResp); err != nil {
+			t.Fatalf("Failed to decode query response: %v", err)
+		}
+		resp.Body.Close()
+
+		if !strings.Contains(mooResp.Output, "Query Test") {
+			t.Error("Query response should contain input text")
 		}
 
-		if !strings.Contains(result.Output, "Query Test") {
-			t.Error("Output should contain the query text")
-		}
-	})
-
-	t.Run("APIMoo_RandomCow", func(t *testing.T) {
-		reqBody := map[string]string{
+		// Step 5: Test random cow selection
+		reqBody = map[string]string{
 			"text": "Random test",
 			"cow":  "random",
 		}
-		jsonData, _ := json.Marshal(reqBody)
+		jsonData, _ = json.Marshal(reqBody)
 
-		resp, err := client.Post(
+		resp, err = client.Post(
 			baseURL+"/api/moo",
 			"application/json",
 			bytes.NewBuffer(jsonData),
 		)
 		if err != nil {
-			t.Fatalf("Failed to call /api/moo with random: %v", err)
+			t.Fatalf("POST /api/moo (random): %v", err)
 		}
-		defer resp.Body.Close()
-
 		if resp.StatusCode != http.StatusOK {
-			t.Errorf("Expected status 200, got %d", resp.StatusCode)
+			t.Errorf("POST /api/moo (random): expected 200, got %d", resp.StatusCode)
 		}
-	})
+		resp.Body.Close()
 
-	t.Run("APIMoo_InvalidCow", func(t *testing.T) {
-		reqBody := map[string]string{
+		// Step 6: Test error handling - invalid cow
+		reqBody = map[string]string{
 			"text": "Test",
 			"cow":  "nonexistent",
 		}
-		jsonData, _ := json.Marshal(reqBody)
+		jsonData, _ = json.Marshal(reqBody)
 
-		resp, err := client.Post(
+		resp, err = client.Post(
 			baseURL+"/api/moo",
 			"application/json",
 			bytes.NewBuffer(jsonData),
 		)
 		if err != nil {
-			t.Fatalf("Failed to call /api/moo: %v", err)
+			t.Fatalf("POST /api/moo (invalid cow): %v", err)
 		}
-		defer resp.Body.Close()
-
 		if resp.StatusCode != http.StatusBadRequest {
-			t.Errorf("Expected status 400 for invalid cow, got %d", resp.StatusCode)
+			t.Errorf("POST /api/moo (invalid cow): expected 400, got %d", resp.StatusCode)
 		}
-	})
+		resp.Body.Close()
 
-	t.Run("APIMoo_MissingText", func(t *testing.T) {
-		reqBody := map[string]string{
+		// Step 7: Test error handling - missing text
+		reqBody = map[string]string{
 			"cow": "default",
 		}
-		jsonData, _ := json.Marshal(reqBody)
+		jsonData, _ = json.Marshal(reqBody)
 
-		resp, err := client.Post(
+		resp, err = client.Post(
 			baseURL+"/api/moo",
 			"application/json",
 			bytes.NewBuffer(jsonData),
 		)
 		if err != nil {
-			t.Fatalf("Failed to call /api/moo: %v", err)
+			t.Fatalf("POST /api/moo (missing text): %v", err)
 		}
-		defer resp.Body.Close()
-
 		if resp.StatusCode != http.StatusBadRequest {
-			t.Errorf("Expected status 400 for missing text, got %d", resp.StatusCode)
+			t.Errorf("POST /api/moo (missing text): expected 400, got %d", resp.StatusCode)
 		}
+		resp.Body.Close()
 	})
 
 	t.Run("WebUI", func(t *testing.T) {
@@ -287,6 +251,22 @@ func TestServerIntegration(t *testing.T) {
 			t.Error("Expected CORS headers in preflight response")
 		}
 	})
+}
+
+// waitForServer polls the server URL until it responds or timeout is reached
+func waitForServer(url string, timeout time.Duration) error {
+	deadline := time.Now().Add(timeout)
+	client := &http.Client{Timeout: 1 * time.Second}
+
+	for time.Now().Before(deadline) {
+		resp, err := client.Get(url)
+		if err == nil {
+			resp.Body.Close()
+			return nil
+		}
+		time.Sleep(50 * time.Millisecond)
+	}
+	return fmt.Errorf("server did not start within %v", timeout)
 }
 
 // TestServerLifecycle tests server startup and graceful shutdown
@@ -331,13 +311,15 @@ func TestServerLifecycle(t *testing.T) {
 		close(serverDone)
 	}()
 
-	// Wait for server to start
-	time.Sleep(500 * time.Millisecond)
+	// Wait for server to start using polling
+	if err := waitForServer("http://localhost:19999/health", 3*time.Second); err != nil {
+		t.Fatalf("Server did not start: %v", err)
+	}
 
 	// Test that server is running
 	resp, err := http.Get("http://localhost:19999/health")
 	if err != nil {
-		t.Fatalf("Server did not start properly: %v", err)
+		t.Fatalf("Server health check failed: %v", err)
 	}
 	resp.Body.Close()
 

@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -209,6 +210,91 @@ func TestCORS(t *testing.T) {
 				if w.Code != http.StatusOK {
 					t.Errorf("OPTIONS status = %d, want %d", w.Code, http.StatusOK)
 				}
+			}
+		})
+	}
+}
+
+// Edge case and concurrency tests
+
+func TestAPIMoo_Concurrent(t *testing.T) {
+	m := NewModule()
+
+	// Test concurrent requests don't cause race conditions
+	const numRequests = 50
+	done := make(chan bool, numRequests)
+	errors := make(chan error, numRequests)
+
+	for i := 0; i < numRequests; i++ {
+		go func(id int) {
+			body := `{"text":"concurrent test","cow":"default","action":"say"}`
+			req := httptest.NewRequest("POST", "/api/moo", strings.NewReader(body))
+			req.Header.Set("Content-Type", "application/json")
+			w := httptest.NewRecorder()
+
+			m.APIMoo(w, req)
+
+			if w.Code != http.StatusOK {
+				errors <- fmt.Errorf("request %d: status = %d", id, w.Code)
+			}
+
+			done <- true
+		}(i)
+	}
+
+	// Wait for all requests to complete
+	for i := 0; i < numRequests; i++ {
+		<-done
+	}
+
+	close(errors)
+	for err := range errors {
+		t.Error(err)
+	}
+}
+
+func TestAPIMoo_LargePayload(t *testing.T) {
+	m := NewModule()
+
+	// Test with large text input
+	largeText := strings.Repeat("This is a very long line of text. ", 1000)
+	body := fmt.Sprintf(`{"text":"%s","cow":"default"}`, largeText)
+
+	req := httptest.NewRequest("POST", "/api/moo", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	m.APIMoo(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Errorf("Large payload: status = %d, want %d", w.Code, http.StatusOK)
+	}
+}
+
+func TestAPIMoo_Unicode(t *testing.T) {
+	m := NewModule()
+
+	tests := []struct {
+		name string
+		text string
+	}{
+		{"chinese", "你好世界"},
+		{"emoji", "Hello 🐄🐮"},
+		{"arabic", "مرحبا بك"},
+		{"hebrew", "שלום"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			body := fmt.Sprintf(`{"text":"%s","cow":"default"}`, tt.text)
+			req := httptest.NewRequest("POST", "/api/moo", strings.NewReader(body))
+			req.Header.Set("Content-Type", "application/json")
+			w := httptest.NewRecorder()
+
+			m.APIMoo(w, req)
+
+			if w.Code != http.StatusOK {
+				t.Errorf("Unicode test %s: status = %d", tt.name, w.Code)
 			}
 		})
 	}
