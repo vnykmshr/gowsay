@@ -63,10 +63,15 @@ build:
 	go build -ldflags "-X 'main.version=`git log -1 --pretty=format:"%h"`'" -v \
 	   -o=./bin/${binary_name} ${main_package_path}
 
-## run: run the  application
+## run: run the application (CLI mode)
 .PHONY: run
 run: build
 	./bin/${binary_name}
+
+## run/server: run the HTTP server
+.PHONY: run/server
+run/server: build
+	./bin/${binary_name} serve
 
 ## run/live: run the application with reloading on file changes
 .PHONY: run/live

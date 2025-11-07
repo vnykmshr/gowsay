@@ -2,11 +2,48 @@
 
 Implementation of cowsay in Go
 
-Upstream for custom slack command `/moo` deployed at https://gowsay.vnykmshr.com/say
+**Features:**
+- 🖥️ Command-line tool (like original cowsay)
+- 🌐 HTTP API server for Slack integration
+- 🐮 41 different cows
+- 😀 7 moods (borg, dead, greedy, paranoid, stoned, wired, young)
 
-**Status:** Undergoing modernization for gowsay 2.0 - adding CLI tool and web interface while maintaining Slack compatibility.
+**Status:** Undergoing modernization for gowsay 2.0 - CLI tool ✅, web interface (coming soon)
 
-### Usage
+## Usage
+
+### CLI Tool
+
+```bash
+# Basic usage
+gowsay "Hello World"
+
+# Use a different cow
+gowsay -c dragon "Fire!"
+
+# Make the cow think instead of speak
+gowsay -t "Hmm..."
+
+# Random cow and mood
+gowsay -r "Surprise!"
+
+# Use mood
+gowsay -c tux -m dead "System crashed"
+
+# From pipe
+echo "Hello from pipe" | gowsay
+
+# List available cows and moods
+gowsay -l
+
+# Help
+gowsay --help
+```
+
+### Slack Command
+
+Deployed at https://gowsay.vnykmshr.com/say
+
 ```
 /moo [think|surprise] [cow] [mood] message
 ```
@@ -42,11 +79,18 @@ make build
 go build -ldflags "-X 'main.version=`git log -1 --pretty=format:"%h"`'" -v
 ```
 
-### Run
+### Run CLI
 ```bash
-make run
+./bin/gowsay "Hello World"
+```
+
+### Run Server
+```bash
+make run/server
 # or
-PORT=8080 ./bin/gowsay
+./bin/gowsay serve
+# or with custom port
+PORT=8080 ./bin/gowsay serve
 ```
 
 ### Test
