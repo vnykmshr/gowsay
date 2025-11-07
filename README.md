@@ -6,8 +6,8 @@ Implementation of cowsay in Go
 - Command-line tool (like original cowsay)
 - HTTP API server for Slack integration
 - Web UI with embedded assets
-- 41 different cows
-- 7 moods (borg, dead, greedy, paranoid, stoned, wired, young)
+- 52 different cows
+- 8 moods (borg, dead, greedy, paranoid, stoned, tired, wired, young)
 
 **Status:** gowsay 2.0 - CLI tool, Web UI, JSON API
 
@@ -89,6 +89,13 @@ curl http://localhost:9000/health
 - `action` - "say" or "think" (default: "say")
 - `columns` - Text width for wrapping (default: 40)
 
+**Error Responses:**
+```json
+{"error": "text is required"}
+{"error": "cow 'invalid' not found"}
+{"error": "mood 'invalid' not found"}
+```
+
 ### Slack Command
 
 Deployed at https://gowsay.vnykmshr.com/say
@@ -100,15 +107,16 @@ Deployed at https://gowsay.vnykmshr.com/say
 ### Cows
 ```
 `apt`, `beavis.zen`, `bong`, `bud-frogs`, `bunny`, `calvin`, `cheese`, `cock`, `cower`,
-`daemon`, `default`, `dragon-and-cow`, `dragon`, `duck`, `elephant-in-snake`, `elephant`, `eyes`, `flaming-sheep`, `ghostbusters`,
-`gnu`, `hellokitty`, `kitty`, `koala`, `kosh`, `luke-koala`, `mech-and-cow`, `meow`, `milk`, `moofasa`,
-`moose`, `mutilated`, `pony-smaller`, `pony`, `random`, `ren`, `sheep`, `skeleton`, `snowman`, `stegosaurus`,
-`stimpy`, `suse`, `three-eyes`, `turkey`, `turtle`, `tux`, `unipony-smaller`, `unipony`, `vader-koala`, `vader`,
-`www`
+`daemon`, `default`, `dragon`, `dragon-and-cow`, `duck`, `elephant`, `elephant-in-snake`,
+`eyes`, `flaming-sheep`, `ghostbusters`, `gnu`, `head-in`, `hellokitty`, `kiss`, `kitty`,
+`koala`, `kosh`, `luke-koala`, `mech-and-cow`, `meow`, `milk`, `moofasa`, `moose`,
+`mutilated`, `pony`, `pony-smaller`, `ren`, `sheep`, `skeleton`, `snowman`,
+`sodomized-sheep`, `stegosaurus`, `stimpy`, `suse`, `three-eyes`, `turkey`, `turtle`,
+`tux`, `unipony`, `unipony-smaller`, `vader`, `vader-koala`, `www`
 ```
 ### Moods
 ```
-`borg`, `dead`, `greedy`, `paranoid`, `random`, `stoned`, `wired`, `young`
+`borg`, `dead`, `greedy`, `paranoid`, `stoned`, `tired`, `wired`, `young`
 ```
 
 ## Configuration
@@ -116,7 +124,7 @@ Deployed at https://gowsay.vnykmshr.com/say
 Configuration via environment variables:
 
 - `PORT` - Server port (default: `9000`)
-- `GOWSAY_TOKEN` - Authentication token (default: `devel`)
+- `GOWSAY_TOKEN` - Authentication token (default: `devel`, allows any request - set in production)
 - `GOWSAY_COLUMNS` - Text column width (default: `40`)
 
 ## Development
@@ -169,8 +177,8 @@ docker build -t gowsay .
 # Run container
 docker run -p 9000:9000 gowsay
 
-# Or use docker-compose
-docker-compose up
+# Or use docker compose
+docker compose up
 ```
 
 Docker image details:

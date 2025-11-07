@@ -29,10 +29,10 @@ Version 2.0 represents a complete refactoring focused on simplicity, maintainabi
   - `GET /api/moods` - List all available moods
   - `GET /health` - Health check endpoint
 - CORS middleware for cross-origin requests
-- Comprehensive test suite with 69% overall coverage (97.6% for core rendering)
+- Comprehensive test suite (89.7% API coverage, 97.6% core rendering)
 - Single binary deployment with embedded web assets
 - 8 moods: borg, dead, greedy, paranoid, stoned, tired, wired, young
-- 41 different cow variations
+- 52 different cow variations
 
 ### Changed
 - **Breaking**: Removed legacy Tokopedia dependencies (grace, logging, gcfg)
@@ -57,7 +57,7 @@ Version 2.0 represents a complete refactoring focused on simplicity, maintainabi
 - Various test improvements and bug fixes
 
 ### Dependencies
-- `github.com/mattn/go-runewidth` v0.0.16 - Unicode width calculation
+- `github.com/mattn/go-runewidth` v0.0.19 - Unicode width calculation
 - `github.com/mitchellh/go-wordwrap` v1.0.1 - Text word wrapping
 
 ## [1.0.0] - Initial Release
