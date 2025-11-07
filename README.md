@@ -2,9 +2,10 @@
 
 Implementation of cowsay in Go
 
-**Features:**
+**Single binary, multiple modes:**
 - Command-line tool (like original cowsay)
 - HTTP API server for Slack integration
+- Web UI with embedded assets
 - 41 different cows
 - 7 moods (borg, dead, greedy, paranoid, stoned, wired, young)
 
