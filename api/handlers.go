@@ -68,7 +68,7 @@ func (m *Module) APIMoo(w http.ResponseWriter, r *http.Request) {
 		req.Action = cow.ActionSay
 	}
 	if req.Columns == 0 {
-		req.Columns = int(m.cfg.App.Columns)
+		req.Columns = m.columns
 	}
 
 	// Handle random

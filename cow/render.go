@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"log"
+	"log/slog"
 	"strings"
 
 	runewidth "github.com/mattn/go-runewidth"
@@ -66,7 +66,7 @@ func renderCow(f *Face) string {
 
 	var buf bytes.Buffer
 	if err := tmpl.Execute(&buf, f); err != nil {
-		log.Println(err)
+		slog.Error("failed to render cow template", "cow", f.cowfile, "error", err)
 		return err.Error()
 	}
 

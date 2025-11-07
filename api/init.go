@@ -2,7 +2,7 @@ package api
 
 import (
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"strconv"
@@ -11,56 +11,43 @@ import (
 	"github.com/vnykmshr/gowsay/cow"
 )
 
-// NewModule create new module
+// NewModule creates a new API handler module with configuration from environment
 func NewModule() *Module {
-	cfg := loadConfig()
-	return &Module{
-		cfg: &cfg,
-	}
-}
-
-func loadConfig() Config {
-	// Load configuration from environment variables
 	token := os.Getenv("GOWSAY_TOKEN")
 	if token == "" {
 		token = "devel"
 	}
 
-	columns := int32(40)
+	columns := 40
 	if colStr := os.Getenv("GOWSAY_COLUMNS"); colStr != "" {
 		if col, err := strconv.Atoi(colStr); err == nil && col > 0 {
-			columns = int32(col)
+			columns = col
 		}
 	}
 
-	return Config{
-		Server: ServerConfig{
-			Name: "gowsay",
-		},
-		App: AppConfig{
-			Token:   token,
-			Columns: columns,
-		},
+	return &Module{
+		token:   token,
+		columns: columns,
 	}
 }
 
-// Gowsay gowsay request handler
-func (hlm *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
+// Gowsay handles Slack /moo command requests
+func (m *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 	token := r.FormValue(FieldToken)
-	if os.Getenv(FieldEnv) == ValueProduction && token != hlm.cfg.App.Token && token != ValueDefaultToken {
-		hlm.motd(w)
+	if os.Getenv(FieldEnv) == ValueProduction && token != m.token && token != ValueDefaultToken {
+		m.motd(w)
 		return
 	}
 
 	text := r.FormValue(FieldText)
 	if strings.TrimSpace(text) == "" {
-		hlm.motd(w)
+		m.motd(w)
 		return
 	}
 
 	parts := sanitize(strings.Split(text, " "))
 	if len(parts) == 0 {
-		hlm.motd(w)
+		m.motd(w)
 		return
 	}
 
@@ -78,7 +65,7 @@ func (hlm *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 		if len(parts) == 0 {
 			parts = []string{cow.RandomMessage()}
 		}
-		output := cow.Render(parts, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, int(hlm.cfg.App.Columns))
+		output := cow.Render(parts, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, m.columns)
 		writeJSON(w, SlackResponse{ResponseType: ResponseInChannel, Text: fmt.Sprintf("```\n%s\n```", output)}, http.StatusOK)
 		return
 	}
@@ -118,16 +105,16 @@ func (hlm *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 		parts = append(parts, cow.RandomMessage())
 	}
 
-	log.Printf("%s %s %s %s %s", CommandMoo, action, cowName, mood, strings.Join(parts, " "))
-	output := cow.Render(parts, cowName, mood, action, int(hlm.cfg.App.Columns))
+	slog.Info("slack command", "command", CommandMoo, "action", action, "cow", cowName, "mood", mood, "text", strings.Join(parts, " "))
+	output := cow.Render(parts, cowName, mood, action, m.columns)
 	writeJSON(w, SlackResponse{ResponseType: ResponseInChannel, Text: fmt.Sprintf("```\n%s\n```", output)}, http.StatusOK)
 }
 
-func (hlm *Module) motd(w http.ResponseWriter) {
-	motd := cow.Render([]string{cow.RandomMessage()}, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, int(hlm.cfg.App.Columns))
+func (m *Module) motd(w http.ResponseWriter) {
+	motd := cow.Render([]string{cow.RandomMessage()}, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, m.columns)
 	_, err := w.Write([]byte(motd))
 	if err != nil {
-		log.Println(err)
+		slog.Error("failed to write motd response", "error", err)
 	}
 }
 

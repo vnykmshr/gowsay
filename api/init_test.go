@@ -30,24 +30,16 @@ func TestNewModule(t *testing.T) {
 }
 
 func TestModule_Gowsay(t *testing.T) {
-	cfg := loadConfig()
-	type fields struct {
-		cfg *Config
-	}
 	type args struct {
 		w http.ResponseWriter
 		r *http.Request
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
+		name string
+		args args
 	}{
 		{
 			name: "production",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=test", nil),
@@ -55,9 +47,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "empty",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123", nil),
@@ -65,9 +54,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "default",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text=all%20you%20see", nil),
@@ -75,9 +61,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "help",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+ActionHelp, nil),
@@ -85,9 +68,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "surprise",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+ActionSurprise, nil),
@@ -95,9 +75,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "think-default",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20thinking", nil),
@@ -105,9 +82,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "think-apt",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20apt%20thinking", nil),
@@ -115,9 +89,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "think-apt-greedy",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20apt%20greedy%20thinking", nil),
@@ -125,9 +96,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "think-random",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20random%20greedy%20thinking", nil),
@@ -135,9 +103,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "think-random-random",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20random%20random%20thinking", nil),
@@ -145,9 +110,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "think-random-random-random",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20random%20random", nil),
@@ -155,9 +117,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "say-random-random",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text=random%20random%20all%20you%20see", nil),
@@ -165,9 +124,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "say-apt-young",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text=apt%20young%20all%20you%20see", nil),
@@ -175,9 +131,6 @@ func TestModule_Gowsay(t *testing.T) {
 		},
 		{
 			name: "say-apt",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text=apt%20all%20you%20see", nil),
@@ -186,37 +139,30 @@ func TestModule_Gowsay(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if tt.name == "t1" {
+			if tt.name == "production" {
 				os.Setenv(FieldEnv, ValueProduction)
 			} else {
 				os.Setenv(FieldEnv, "")
 			}
-			hlm := &Module{
-				cfg: tt.fields.cfg,
+			m := &Module{
+				token:   "abc123",
+				columns: 40,
 			}
-			hlm.Gowsay(tt.args.w, tt.args.r)
+			m.Gowsay(tt.args.w, tt.args.r)
 		})
 	}
 }
 
 func TestModule_motd(t *testing.T) {
-	cfg := loadConfig()
-	type fields struct {
-		cfg *Config
-	}
 	type args struct {
 		w http.ResponseWriter
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
+		name string
+		args args
 	}{
 		{
 			name: "t1",
-			fields: fields{
-				cfg: &cfg,
-			},
 			args: args{
 				w: httptest.NewRecorder(),
 			},
@@ -224,10 +170,11 @@ func TestModule_motd(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			hlm := &Module{
-				cfg: tt.fields.cfg,
+			m := &Module{
+				token:   "test",
+				columns: 40,
 			}
-			hlm.motd(tt.args.w)
+			m.motd(tt.args.w)
 		})
 	}
 }
@@ -285,33 +232,61 @@ func Test_sanitize(t *testing.T) {
 	}
 }
 
-func Test_loadConfig(t *testing.T) {
-	// Clear env vars to test defaults
-	os.Unsetenv("GOWSAY_TOKEN")
-	os.Unsetenv("GOWSAY_COLUMNS")
-
+func Test_NewModuleDefaults(t *testing.T) {
 	tests := []struct {
-		name string
-		want Config
+		name        string
+		tokenEnv    string
+		columnsEnv  string
+		wantToken   string
+		wantColumns int
 	}{
 		{
-			name: "defaults",
-			want: Config{
-				Server: ServerConfig{
-					Name: "gowsay",
-				},
-				App: AppConfig{
-					Token:   "devel",
-					Columns: 40,
-				},
-			},
+			name:        "defaults",
+			tokenEnv:    "",
+			columnsEnv:  "",
+			wantToken:   "devel",
+			wantColumns: 40,
+		},
+		{
+			name:        "custom-values",
+			tokenEnv:    "test-token",
+			columnsEnv:  "80",
+			wantToken:   "test-token",
+			wantColumns: 80,
+		},
+		{
+			name:        "invalid-columns",
+			tokenEnv:    "test",
+			columnsEnv:  "invalid",
+			wantToken:   "test",
+			wantColumns: 40,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := loadConfig(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("loadConfig() = %v, want %v", got, tt.want)
+			// Set up env vars
+			if tt.tokenEnv != "" {
+				os.Setenv("GOWSAY_TOKEN", tt.tokenEnv)
+			} else {
+				os.Unsetenv("GOWSAY_TOKEN")
 			}
+			if tt.columnsEnv != "" {
+				os.Setenv("GOWSAY_COLUMNS", tt.columnsEnv)
+			} else {
+				os.Unsetenv("GOWSAY_COLUMNS")
+			}
+
+			got := NewModule()
+			if got.token != tt.wantToken {
+				t.Errorf("NewModule().token = %v, want %v", got.token, tt.wantToken)
+			}
+			if got.columns != tt.wantColumns {
+				t.Errorf("NewModule().columns = %v, want %v", got.columns, tt.wantColumns)
+			}
+
+			// Clean up
+			os.Unsetenv("GOWSAY_TOKEN")
+			os.Unsetenv("GOWSAY_COLUMNS")
 		})
 	}
 }
