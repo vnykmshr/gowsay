@@ -6,7 +6,7 @@ Implementation of cowsay in Go
 - Command-line tool (like original cowsay)
 - HTTP API server for Slack integration
 - Web UI with embedded assets
-- 52 different cows
+- 51 different cows
 - 8 moods (borg, dead, greedy, paranoid, stoned, tired, wired, young)
 
 **Status:** gowsay 2.0 - CLI tool, Web UI, JSON API
@@ -53,7 +53,7 @@ PORT=8080 ./bin/gowsay serve
 
 **Features:**
 - Modern, polished UI with dark mode
-- Choose from 52 different cows
+- Choose from 51 different cows
 - Apply moods (borg, dead, greedy, etc.)
 - Random button for surprise cows
 - Copy output to clipboard
