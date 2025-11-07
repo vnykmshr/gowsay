@@ -10,6 +10,9 @@
 *.so
 *.dylib
 
+# Development planning (not tracked)
+/todos/
+
 # Test binary, built with `go test -c`
 *.test
 
