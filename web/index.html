@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>gowsay - ASCII Cow Generator</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode">
+        <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>🐮 gowsay</h1>
+            <p>Make ASCII cows say things</p>
+        </header>
+
+        <div class="card">
+            <form id="cowform">
+                <div class="form-group">
+                    <label for="text">Message</label>
+                    <textarea
+                        id="text"
+                        name="text"
+                        placeholder="Type your message here..."
+                        rows="3"
+                        required
+                    ></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cow">Cow</label>
+                        <select id="cow" name="cow">
+                            <option value="default">Default</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mood">Mood</label>
+                        <select id="mood" name="mood">
+                            <option value="">Normal</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="action">Action</label>
+                        <select id="action" name="action">
+                            <option value="say">Say</option>
+                            <option value="think">Think</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">Generate</span>
+                        <span class="btn-loading">Generating...</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="randomize()">
+                        🎲 Random
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="card output-card" id="output-card" style="display: none;">
+            <div class="output-header">
+                <h3>Output</h3>
+                <button class="btn-icon" onclick="copyToClipboard()" title="Copy to clipboard">
+                    <svg class="copy-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                    <svg class="check-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                </button>
+            </div>
+            <pre id="output"></pre>
+        </div>
+
+        <footer>
+            <p>
+                <a href="https://github.com/vnykmshr/gowsay" target="_blank">GitHub</a>
+                •
+                <a href="/health" target="_blank">API Docs</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

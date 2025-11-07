@@ -168,8 +168,8 @@ func runServer() {
 	http.HandleFunc("/api/moods", api.CORS(m.APIMoods))
 	http.HandleFunc("/health", api.CORS(api.Health(version)))
 
-	// Root endpoint - for now, same as /say (will be web UI later)
-	http.HandleFunc("/", m.Gowsay)
+	// Web UI - serve at root
+	http.Handle("/", api.ServeWeb())
 
 	fmt.Println(api.GetBanner(version))
 	slog.Info("routes registered",

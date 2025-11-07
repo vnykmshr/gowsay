@@ -8,7 +8,7 @@ Implementation of cowsay in Go
 - 🐮 41 different cows
 - 😀 7 moods (borg, dead, greedy, paranoid, stoned, wired, young)
 
-**Status:** Undergoing modernization for gowsay 2.0 - CLI tool ✅, web interface (coming soon)
+**Status:** gowsay 2.0 - CLI tool ✅, Web UI ✅, JSON API ✅
 
 ## Usage
 
@@ -40,14 +40,25 @@ gowsay -l
 gowsay --help
 ```
 
-### HTTP API
+### Web Interface
 
-Start the server:
+Start the server and open http://localhost:9000 in your browser:
+
 ```bash
 ./bin/gowsay serve
-# or
+# or with custom port
 PORT=8080 ./bin/gowsay serve
 ```
+
+**Features:**
+- 🎨 Modern, polished UI with dark mode
+- 🐄 Choose from 41 different cows
+- 😊 Apply moods (borg, dead, greedy, etc.)
+- 🎲 Random button for surprise cows
+- 📋 Copy output to clipboard
+- 📱 Mobile responsive
+
+### HTTP API
 
 **Endpoints:**
 

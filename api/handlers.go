@@ -3,11 +3,13 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"sort"
 	"strconv"
 
 	"github.com/vnykmshr/gowsay/cow"
+	"github.com/vnykmshr/gowsay/web"
 )
 
 // MooRequest represents a request to generate cowsay
@@ -139,4 +141,13 @@ func writeJSONError(w http.ResponseWriter, message string, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+}
+
+// ServeWeb serves the web UI
+func ServeWeb() http.Handler {
+	fsys, err := fs.Sub(web.Files, ".")
+	if err != nil {
+		panic(err)
+	}
+	return http.FileServer(http.FS(fsys))
 }
