@@ -45,14 +45,14 @@ func TestModule_Gowsay(t *testing.T) {
 			name: "help",
 			args: args{
 				w: httptest.NewRecorder(),
-				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+ActionHelp, nil),
+				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+commandHelp, nil),
 			},
 		},
 		{
 			name: "surprise",
 			args: args{
 				w: httptest.NewRecorder(),
-				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+ActionSurprise, nil),
+				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+commandSurprise, nil),
 			},
 		},
 		{
@@ -122,9 +122,9 @@ func TestModule_Gowsay(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if tt.name == "production" {
-				os.Setenv(FieldEnv, ValueProduction)
+				os.Setenv(envKey, envProduction)
 			} else {
-				os.Setenv(FieldEnv, "")
+				os.Setenv(envKey, "")
 			}
 			m := &Module{
 				token:   "abc123",
@@ -159,8 +159,8 @@ func Test_writeJSON(t *testing.T) {
 	writeJSON(w, response, http.StatusOK)
 
 	// Verify content type header
-	if got := w.Header().Get(FieldContentType); got != ValueApplicationJSON {
-		t.Errorf("Content-Type = %s, want %s", got, ValueApplicationJSON)
+	if got := w.Header().Get("Content-Type"); got != "application/json" {
+		t.Errorf("Content-Type = %s, want application/json", got)
 	}
 
 	// Verify status code

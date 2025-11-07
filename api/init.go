@@ -33,13 +33,13 @@ func NewModule() *Module {
 
 // Gowsay handles Slack /moo command requests
 func (m *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
-	token := r.FormValue(FieldToken)
-	if os.Getenv(FieldEnv) == ValueProduction && token != m.token && token != ValueDefaultToken {
+	token := r.FormValue(fieldToken)
+	if os.Getenv(envKey) == envProduction && token != m.token && token != defaultTokenValue {
 		m.motd(w)
 		return
 	}
 
-	text := r.FormValue(FieldText)
+	text := r.FormValue(fieldText)
 	if strings.TrimSpace(text) == "" {
 		m.motd(w)
 		return
@@ -51,28 +51,28 @@ func (m *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if len(parts) == 1 && (parts[0] == ActionList || parts[0] == ActionHelp) {
+	if len(parts) == 1 && (parts[0] == commandList || parts[0] == commandHelp) {
 		writeJSON(w, SlackResponse{
-			ResponseType: ResponseEphemeral,
+			ResponseType: responseEphemeral,
 			Text:         GetUsageString(),
 			Attachments:  []Attachment{{Text: GetHelpString()}},
 		}, http.StatusOK)
 		return
 	}
 
-	if len(parts) > 0 && parts[0] == ActionSurprise {
+	if len(parts) > 0 && parts[0] == commandSurprise {
 		parts = parts[1:]
 		if len(parts) == 0 {
 			parts = []string{cow.RandomMessage()}
 		}
 		output := cow.Render(parts, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, m.columns)
-		writeJSON(w, SlackResponse{ResponseType: ResponseInChannel, Text: fmt.Sprintf("```\n%s\n```", output)}, http.StatusOK)
+		writeJSON(w, SlackResponse{ResponseType: responseInChannel, Text: fmt.Sprintf("```\n%s\n```", output)}, http.StatusOK)
 		return
 	}
 
-	var action = cow.ActionSay
-	var cowName = CowDefault
-	var mood = MoodDefault
+	action := cow.ActionSay
+	cowName := defaultCow
+	mood := ""
 
 	if len(parts) > 1 && parts[0] == cow.ActionThink {
 		action = cow.ActionThink
@@ -83,19 +83,15 @@ func (m *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 		if cow.Exists(parts[0]) {
 			cowName = parts[0]
 			parts = parts[1:]
-		}
-
-		if cow.MoodExists(parts[0]) {
-			mood = parts[0]
-			parts = parts[1:]
-		}
-
-		if parts[0] == CowRandom {
+		} else if parts[0] == commandRandom {
 			cowName = cow.RandomCow()
 			parts = parts[1:]
 		}
 
-		if parts[0] == MoodRandom {
+		if len(parts) > 0 && cow.MoodExists(parts[0]) {
+			mood = parts[0]
+			parts = parts[1:]
+		} else if len(parts) > 0 && parts[0] == commandRandom {
 			mood = cow.RandomMood()
 			parts = parts[1:]
 		}
@@ -105,9 +101,9 @@ func (m *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 		parts = append(parts, cow.RandomMessage())
 	}
 
-	slog.Info("slack command", "command", CommandMoo, "action", action, "cow", cowName, "mood", mood, "text", strings.Join(parts, " "))
+	slog.Info("slack command", "command", "/moo", "action", action, "cow", cowName, "mood", mood, "text", strings.Join(parts, " "))
 	output := cow.Render(parts, cowName, mood, action, m.columns)
-	writeJSON(w, SlackResponse{ResponseType: ResponseInChannel, Text: fmt.Sprintf("```\n%s\n```", output)}, http.StatusOK)
+	writeJSON(w, SlackResponse{ResponseType: responseInChannel, Text: fmt.Sprintf("```\n%s\n```", output)}, http.StatusOK)
 }
 
 func (m *Module) motd(w http.ResponseWriter) {

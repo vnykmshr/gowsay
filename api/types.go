@@ -1,30 +1,35 @@
 package api
 
-// constants
+// Configuration and environment constants
 const (
-	ActionList     = "list"
-	ActionHelp     = "help"
-	ActionSurprise = "surprise"
+	envKey            = "ENV"
+	envProduction     = "production"
+	defaultTokenValue = "gowsay"
+)
 
-	CommandMoo = "/moo"
+// Form field names
+const (
+	fieldToken = "token"
+	fieldText  = "text"
+)
 
-	CowDefault = "default"
-	CowRandom  = "random"
+// Command keywords
+const (
+	commandHelp     = "help"
+	commandList     = "list"
+	commandSurprise = "surprise"
+	commandRandom   = "random"
+)
 
-	MoodDefault = ""
-	MoodRandom  = "random"
+// Slack response types
+const (
+	responseEphemeral = "ephemeral"
+	responseInChannel = "in_channel"
+)
 
-	ResponseEphemeral = "ephemeral"
-	ResponseInChannel = "in_channel"
-
-	FieldToken       = "token"
-	FieldEnv         = "ENV"
-	FieldText        = "text"
-	FieldContentType = "Content-Type"
-
-	ValueProduction      = "production"
-	ValueApplicationJSON = "application/json"
-	ValueDefaultToken    = "gowsay"
+// Default values
+const (
+	defaultCow = "default"
 )
 
 // Module holds handler dependencies
@@ -33,14 +38,14 @@ type Module struct {
 	columns int
 }
 
-// SlackResponse the slack response
+// SlackResponse represents a Slack-compatible response
 type SlackResponse struct {
 	ResponseType string       `json:"response_type,omitempty"`
 	Text         string       `json:"text,omitempty"`
 	Attachments  []Attachment `json:"attachments,omitempty"`
 }
 
-// Attachment attachment text
+// Attachment represents a Slack attachment
 type Attachment struct {
 	Text string `json:"text,omitempty"`
 }

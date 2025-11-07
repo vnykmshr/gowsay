@@ -53,7 +53,7 @@ PORT=8080 ./bin/gowsay serve
 
 **Features:**
 - Modern, polished UI with dark mode
-- Choose from 41 different cows
+- Choose from 52 different cows
 - Apply moods (borg, dead, greedy, etc.)
 - Random button for surprise cows
 - Copy output to clipboard

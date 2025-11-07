@@ -263,9 +263,9 @@ func TestRender_Unicode(t *testing.T) {
 
 func TestRender_LargeInput(t *testing.T) {
 	tests := []struct {
-		name      string
-		textGen   func() []string
-		maxLines  int
+		name     string
+		textGen  func() []string
+		maxLines int
 	}{
 		{
 			name: "very_long_single_line",

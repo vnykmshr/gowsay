@@ -96,10 +96,7 @@ func (m *Module) APIMoo(w http.ResponseWriter, r *http.Request) {
 		req.Action = cow.ActionSay
 	}
 
-	// Render
 	output := cow.Render([]string{req.Text}, req.Cow, req.Mood, req.Action, req.Columns)
-
-	// Return response with markdown wrapping for better display
 	writeJSON(w, MooResponse{Output: fmt.Sprintf("```\n%s\n```", output)}, http.StatusOK)
 }
 

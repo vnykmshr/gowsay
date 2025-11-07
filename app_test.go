@@ -301,9 +301,9 @@ func TestFlagParsing(t *testing.T) {
 	defer func() { os.Args = oldArgs }()
 
 	tests := []struct {
-		name     string
-		args     []string
-		checkFn  func(*testing.T)
+		name    string
+		args    []string
+		checkFn func(*testing.T)
 	}{
 		{
 			name: "default_values",
