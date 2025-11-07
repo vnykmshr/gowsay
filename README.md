@@ -175,7 +175,7 @@ docker-compose up
 
 Docker image details:
 - Multi-stage build using Go 1.23
-- Final image uses scratch base (~5MB)
+- Final image uses scratch base (~11MB including embedded web assets)
 - Default command runs server mode
 - Can override for CLI: `docker run gowsay --help`
 
