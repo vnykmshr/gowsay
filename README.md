@@ -159,6 +159,26 @@ Raspberry Pi:
 GOOS=linux GOARCH=arm GOARM=5 go build -o bin/gowsay-pi
 ```
 
+### Docker
+
+Build and run with Docker:
+```bash
+# Build image
+docker build -t gowsay .
+
+# Run container
+docker run -p 9000:9000 gowsay
+
+# Or use docker-compose
+docker-compose up
+```
+
+Docker image details:
+- Multi-stage build using Go 1.23
+- Final image uses scratch base (~5MB)
+- Default command runs server mode
+- Can override for CLI: `docker run gowsay --help`
+
 ### Slack Integration
 
 Example request:
@@ -168,3 +188,7 @@ curl -X POST 'https://gowsay.vnykmshr.com/say' \
   --data-urlencode 'token=xxx' \
   --data-urlencode 'text=Hello World'
 ```
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details

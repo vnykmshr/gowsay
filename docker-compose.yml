@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  gowsay:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gowsay
+    ports:
+      - "9000:9000"
+    environment:
+      - PORT=9000
+      - GOWSAY_TOKEN=devel
+      - GOWSAY_COLUMNS=40
+    restart: unless-stopped
