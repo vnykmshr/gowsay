@@ -1,7 +1,10 @@
 ## gowsay
-Implementation of cowsay in go
+
+Implementation of cowsay in Go
 
 Upstream for custom slack command `/moo` deployed at https://gowsay.vnykmshr.com/say
+
+**Status:** Undergoing modernization for gowsay 2.0 - adding CLI tool and web interface while maintaining Slack compatibility.
 
 ### Usage
 ```
@@ -22,20 +25,45 @@ Upstream for custom slack command `/moo` deployed at https://gowsay.vnykmshr.com
 `borg`, `dead`, `greedy`, `paranoid`, `random`, `stoned`, `wired`, `young`
 ```
 
+## Configuration
+
+Configuration via environment variables:
+
+- `PORT` - Server port (default: `9000`)
+- `GOWSAY_TOKEN` - Authentication token (default: `devel`)
+- `GOWSAY_COLUMNS` - Text column width (default: `40`)
+
 ## Development
+
 ### Build
-```
+```bash
+make build
+# or
 go build -ldflags "-X 'main.version=`git log -1 --pretty=format:"%h"`'" -v
 ```
 
-### Linux
-```
-GOOS=linux GOARCH=amd64
+### Run
+```bash
+make run
+# or
+PORT=8080 ./bin/gowsay
 ```
 
-### Pi
+### Test
+```bash
+make test
 ```
-GOOS=linux GOARCH=arm GOARM=5
+
+### Cross-compile
+
+Linux:
+```bash
+GOOS=linux GOARCH=amd64 go build -o bin/gowsay-linux
+```
+
+Raspberry Pi:
+```bash
+GOOS=linux GOARCH=arm GOARM=5 go build -o bin/gowsay-pi
 ```
 
 ### Slack commands
