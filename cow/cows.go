@@ -1,4 +1,4 @@
-package api
+package cow
 
 import (
 	"math/rand"
@@ -738,7 +738,23 @@ Elephant inside ASCII snake
 `
 }
 
-func getRandomCow() string {
+// RandomCow returns a random cow name
+func RandomCow() string {
 	keys := reflect.ValueOf(cows).MapKeys()
 	return keys[rand.Intn(len(keys))].Interface().(string)
+}
+
+// List returns a sorted list of all available cow names
+func List() []string {
+	names := make([]string, 0, len(cows))
+	for name := range cows {
+		names = append(names, name)
+	}
+	return names
+}
+
+// Exists checks if a cow with the given name exists
+func Exists(name string) bool {
+	_, ok := cows[name]
+	return ok
 }

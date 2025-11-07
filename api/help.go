@@ -5,6 +5,8 @@ import (
 	"os"
 	"sort"
 	"strings"
+
+	"github.com/vnykmshr/gowsay/cow"
 )
 
 // GetBanner gets banner with usage information
@@ -28,7 +30,7 @@ func GetHelpString() string {
 func getCows(sorted bool) []string {
 	var names []string
 	names = append(names, "`"+CowRandom+"`")
-	for name := range cows {
+	for _, name := range cow.List() {
 		names = append(names, "`"+name+"`")
 	}
 
@@ -42,7 +44,7 @@ func getCows(sorted bool) []string {
 func getMoods(sorted bool) []string {
 	var names []string
 	names = append(names, "`"+MoodRandom+"`")
-	for name := range moods {
+	for _, name := range cow.ListMoods() {
 		names = append(names, "`"+name+"`")
 	}
 

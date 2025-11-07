@@ -1,4 +1,4 @@
-package api
+package cow
 
 import (
 	"math/rand"
@@ -54,15 +54,7 @@ func init() {
 	}
 }
 
-func getRandomMoo() string {
+// RandomMessage returns a random moo message
+func RandomMessage() string {
 	return moos[rand.Intn(len(moos))]
-}
-
-func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
 }

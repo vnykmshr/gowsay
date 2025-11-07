@@ -7,6 +7,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/vnykmshr/gowsay/cow"
 )
 
 // NewModule create new module
@@ -77,12 +79,12 @@ func (hlm *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 		parts = parts[1:]
 
 		if len(parts) == 0 {
-			parts = []string{getRandomMoo()}
+			parts = []string{cow.RandomMessage()}
 		}
 
 		response := SlackResponse{
 			ResponseType: ResponseInChannel,
-			Text:         getGowsay(ActionSay, getRandomCow(), getRandomMood(), hlm.cfg.App.Columns, parts),
+			Text:         cow.Render(parts, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, int(hlm.cfg.App.Columns)),
 		}
 
 		writeJSON(w, response)
@@ -90,51 +92,51 @@ func (hlm *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var action = ActionDefault
-	var cow = CowDefault
+	var cowName = CowDefault
 	var mood = MoodDefault
 
 	if len(parts) > 1 && parts[0] == ActionThink {
-		action = parts[0]
+		action = cow.ActionThink
 		parts = parts[1:]
 	}
 
 	if len(parts) > 1 {
-		if _, ok := cows[parts[0]]; ok {
-			cow = parts[0]
+		if cow.Exists(parts[0]) {
+			cowName = parts[0]
 			parts = parts[1:]
 		}
 
-		if _, ok := moods[parts[0]]; ok {
+		if cow.MoodExists(parts[0]) {
 			mood = parts[0]
 			parts = parts[1:]
 		}
 
 		if parts[0] == CowRandom {
-			cow = getRandomCow()
+			cowName = cow.RandomCow()
 			parts = parts[1:]
 		}
 
 		if parts[0] == MoodRandom {
-			mood = getRandomMood()
+			mood = cow.RandomMood()
 			parts = parts[1:]
 		}
 	}
 
 	if len(parts) == 0 {
-		parts = append(parts, getRandomMoo())
+		parts = append(parts, cow.RandomMessage())
 	}
 
-	log.Printf("%s %s %s %s %s", CommandMoo, action, cow, mood, strings.Join(parts, " "))
+	log.Printf("%s %s %s %s %s", CommandMoo, action, cowName, mood, strings.Join(parts, " "))
 	response := SlackResponse{
 		ResponseType: ResponseInChannel,
-		Text:         getGowsay(action, cow, mood, hlm.cfg.App.Columns, parts),
+		Text:         cow.Render(parts, cowName, mood, action, int(hlm.cfg.App.Columns)),
 	}
 
 	writeJSON(w, response)
 }
 
 func (hlm *Module) motd(w http.ResponseWriter) {
-	motd := getGowsay(ActionSay, getRandomCow(), getRandomMood(), hlm.cfg.App.Columns, []string{getRandomMoo()})
+	motd := cow.Render([]string{cow.RandomMessage()}, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, int(hlm.cfg.App.Columns))
 	_, err := w.Write([]byte(motd))
 	if err != nil {
 		log.Println(err)
