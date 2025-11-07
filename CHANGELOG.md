@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
-## [2.0.0] - 2025-11-07
+## [2.0.0] - 2025-11-08
 
 Version 2.0 represents a complete refactoring focused on simplicity, maintainability, and modern Go practices.
 
@@ -32,7 +32,9 @@ Version 2.0 represents a complete refactoring focused on simplicity, maintainabi
 - Comprehensive test suite (89.7% API coverage, 97.6% core rendering)
 - Single binary deployment with embedded web assets
 - 8 moods: borg, dead, greedy, paranoid, stoned, tired, wired, young
-- 52 different cow variations
+- 51 different cow variations
+- GitHub Actions CI/CD pipeline with automated testing
+- Dependabot for automated dependency updates
 
 ### Changed
 - **Breaking**: Removed legacy Tokopedia dependencies (grace, logging, gcfg)
@@ -44,6 +46,13 @@ Version 2.0 represents a complete refactoring focused on simplicity, maintainabi
 - Modernized codebase to Go 1.21+ standards
 - Improved code readability and organization
 - Optimized text wrapping and balloon building algorithms
+
+### Fixed
+- Random cow selection bug (removed non-existent 'kiss' cow from registry)
+- CI lint errors and test failures
+- Dependabot configuration validation
+- Documentation accuracy (cow count, changelog dates)
+- Code cleanup to remove AI-assisted bloat and unnecessary abstractions
 
 ### Removed
 - Dependency on `gopkg.in/tokopedia/grace.v1`
