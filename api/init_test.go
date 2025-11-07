@@ -136,10 +136,6 @@ func TestModule_Gowsay(t *testing.T) {
 }
 
 func TestModule_motd(t *testing.T) {
-	type args struct {
-		w http.ResponseWriter
-	}
-	// Simple smoke test - motd should write output without error
 	m := &Module{
 		token:   "test",
 		columns: 40,
