@@ -11,7 +11,6 @@ import (
 	"os"
 	"os/signal"
 	"sort"
-	"strings"
 	"syscall"
 	"time"
 
@@ -119,11 +118,8 @@ func runCLI() {
 		action = cow.ActionThink
 	}
 
-	// Render and output (without markdown code blocks for CLI)
+	// Render and output
 	output := cow.Render(text, *cowName, *mood, action, *columns)
-	// Strip markdown code blocks (```) for CLI output
-	output = strings.TrimPrefix(output, "```\n")
-	output = strings.TrimSuffix(output, "\n```\n")
 	fmt.Print(output)
 }
 
@@ -159,8 +155,8 @@ func runServer() {
 
 	m := api.NewModule()
 
-	// Legacy Slack endpoint (backward compatibility)
-	http.HandleFunc("/say", m.Gowsay)
+	// Legacy Slack endpoint (backward compatibility, with CORS for consistency)
+	http.HandleFunc("/say", api.CORS(m.Gowsay))
 
 	// New API endpoints (with CORS)
 	http.HandleFunc("/api/moo", api.CORS(m.APIMoo))

@@ -2,12 +2,9 @@ package api
 
 // constants
 const (
-	ActionSay      = "say"
-	ActionThink    = "think"
 	ActionList     = "list"
 	ActionHelp     = "help"
 	ActionSurprise = "surprise"
-	ActionDefault  = ActionSay
 
 	CommandMoo = "/moo"
 
@@ -21,7 +18,7 @@ const (
 	ResponseInChannel = "in_channel"
 
 	FieldToken       = "token"
-	FieldEnv         = "TKPENV"
+	FieldEnv         = "ENV"
 	FieldText        = "text"
 	FieldContentType = "Content-Type"
 

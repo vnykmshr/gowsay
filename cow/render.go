@@ -39,7 +39,7 @@ func Render(text []string, cowName, mood, action string, columns int) string {
 	balloon := buildBalloon(face, action, msgs, width)
 	cow := renderCow(face)
 
-	return fmt.Sprintf("```\n%s%s\n```\n", balloon, cow)
+	return fmt.Sprintf("%s%s", balloon, cow)
 }
 
 // newFace creates a face with the specified cow and mood

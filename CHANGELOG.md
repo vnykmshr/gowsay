@@ -7,17 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- MIT License
-- CHANGELOG to track version history
-- GitHub Actions CI workflow for automated testing
-- Dependabot configuration for dependency updates
-- Dockerfile for containerized deployment
-- SECURITY.md with security policy
-- Integration tests for server and API endpoints
-
-### Changed
-- Updated `go-runewidth` from v0.0.16 to v0.0.19
+Nothing yet.
 
 ## [2.0.0] - 2025-11-07
 

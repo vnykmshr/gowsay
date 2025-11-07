@@ -6,6 +6,8 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/vnykmshr/gowsay/cow"
 )
 
 func TestGetUsageString(t *testing.T) {
@@ -15,7 +17,7 @@ func TestGetUsageString(t *testing.T) {
 	}{
 		{
 			name: "t1",
-			want: fmt.Sprintf("Usage: `%s [%s|%s] [cow] [mood] message`\n", CommandMoo, ActionThink, ActionSurprise),
+			want: fmt.Sprintf("Usage: `%s [%s|%s] [cow] [mood] message`\n", CommandMoo, cow.ActionThink, ActionSurprise),
 		},
 	}
 	for _, tt := range tests {
@@ -171,7 +173,7 @@ func TestGetBanner(t *testing.T) {
 			},
 			want: strings.Join([]string{
 				"gowsay [" + v + "][" + os.Getenv(FieldEnv) + "]",
-				fmt.Sprintf("Usage: `%s [%s|%s] [cow] [mood] message`", CommandMoo, ActionThink, ActionSurprise),
+				fmt.Sprintf("Usage: `%s [%s|%s] [cow] [mood] message`", CommandMoo, cow.ActionThink, ActionSurprise),
 				"",
 				"Cows: `apt`, `beavis.zen`, `bong`, `bud-frogs`, `bunny`, `calvin`, `cheese`, `cock`, `cower`,",
 				"`daemon`, `default`, `dragon-and-cow`, `dragon`, `duck`, `elephant-in-snake`, `elephant`, `eyes`, `flaming-sheep`, `ghostbusters`,",

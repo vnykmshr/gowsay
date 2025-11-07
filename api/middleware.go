@@ -1,6 +1,10 @@
 package api
 
-import "net/http"
+import (
+	"net/http"
+)
+
+const maxRequestBodySize = 10 * 1024 // 10KB
 
 // CORS adds CORS headers to allow cross-origin requests
 func CORS(next http.HandlerFunc) http.HandlerFunc {
@@ -15,6 +19,14 @@ func CORS(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		next(w, r)
+	}
+}
+
+// LimitRequestSize limits the size of incoming request bodies
+func LimitRequestSize(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		r.Body = http.MaxBytesReader(w, r.Body, maxRequestBodySize)
 		next(w, r)
 	}
 }

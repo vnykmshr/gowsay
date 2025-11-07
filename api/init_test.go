@@ -6,6 +6,8 @@ import (
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/vnykmshr/gowsay/cow"
 )
 
 func TestNewModule(t *testing.T) {
@@ -98,7 +100,7 @@ func TestModule_Gowsay(t *testing.T) {
 			},
 			args: args{
 				w: httptest.NewRecorder(),
-				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+ActionThink+"%20thinking", nil),
+				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20thinking", nil),
 			},
 		},
 		{
@@ -108,7 +110,7 @@ func TestModule_Gowsay(t *testing.T) {
 			},
 			args: args{
 				w: httptest.NewRecorder(),
-				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+ActionThink+"%20apt%20thinking", nil),
+				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20apt%20thinking", nil),
 			},
 		},
 		{
@@ -118,7 +120,7 @@ func TestModule_Gowsay(t *testing.T) {
 			},
 			args: args{
 				w: httptest.NewRecorder(),
-				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+ActionThink+"%20apt%20greedy%20thinking", nil),
+				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20apt%20greedy%20thinking", nil),
 			},
 		},
 		{
@@ -128,7 +130,7 @@ func TestModule_Gowsay(t *testing.T) {
 			},
 			args: args{
 				w: httptest.NewRecorder(),
-				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+ActionThink+"%20random%20greedy%20thinking", nil),
+				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20random%20greedy%20thinking", nil),
 			},
 		},
 		{
@@ -138,7 +140,7 @@ func TestModule_Gowsay(t *testing.T) {
 			},
 			args: args{
 				w: httptest.NewRecorder(),
-				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+ActionThink+"%20random%20random%20thinking", nil),
+				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20random%20random%20thinking", nil),
 			},
 		},
 		{
@@ -148,7 +150,7 @@ func TestModule_Gowsay(t *testing.T) {
 			},
 			args: args{
 				w: httptest.NewRecorder(),
-				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+ActionThink+"%20random%20random", nil),
+				r: httptest.NewRequest("GET", "http://localhost/say?token=abc123&text="+cow.ActionThink+"%20random%20random", nil),
 			},
 		},
 		{

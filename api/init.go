@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -78,15 +79,15 @@ func (hlm *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 			parts = []string{cow.RandomMessage()}
 		}
 		output := cow.Render(parts, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, int(hlm.cfg.App.Columns))
-		writeJSON(w, SlackResponse{ResponseType: ResponseInChannel, Text: output}, http.StatusOK)
+		writeJSON(w, SlackResponse{ResponseType: ResponseInChannel, Text: fmt.Sprintf("```\n%s\n```", output)}, http.StatusOK)
 		return
 	}
 
-	var action = ActionDefault
+	var action = cow.ActionSay
 	var cowName = CowDefault
 	var mood = MoodDefault
 
-	if len(parts) > 1 && parts[0] == ActionThink {
+	if len(parts) > 1 && parts[0] == cow.ActionThink {
 		action = cow.ActionThink
 		parts = parts[1:]
 	}
@@ -119,7 +120,7 @@ func (hlm *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("%s %s %s %s %s", CommandMoo, action, cowName, mood, strings.Join(parts, " "))
 	output := cow.Render(parts, cowName, mood, action, int(hlm.cfg.App.Columns))
-	writeJSON(w, SlackResponse{ResponseType: ResponseInChannel, Text: output}, http.StatusOK)
+	writeJSON(w, SlackResponse{ResponseType: ResponseInChannel, Text: fmt.Sprintf("```\n%s\n```", output)}, http.StatusOK)
 }
 
 func (hlm *Module) motd(w http.ResponseWriter) {

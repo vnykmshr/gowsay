@@ -16,7 +16,7 @@ func GetBanner(version string) string {
 
 // GetUsageString usage string
 func GetUsageString() string {
-	return wrapString(fmt.Sprintf("Usage: `%s [%s|%s] [cow] [mood] message`", CommandMoo, ActionThink, ActionSurprise), 0)
+	return wrapString(fmt.Sprintf("Usage: `%s [%s|%s] [cow] [mood] message`", CommandMoo, cow.ActionThink, ActionSurprise), 0)
 }
 
 // GetHelpString help string

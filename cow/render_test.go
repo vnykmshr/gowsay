@@ -46,8 +46,9 @@ func TestRender(t *testing.T) {
 			if result == "" {
 				t.Error("Render() returned empty string")
 			}
-			if !strings.Contains(result, "```") {
-				t.Error("Render() should wrap output in code blocks")
+			// Should contain the cow/balloon characters, not markdown
+			if !strings.Contains(result, "\\") && !strings.Contains(result, "/") && !strings.Contains(result, "-") {
+				t.Error("Render() should return ASCII art with balloon characters")
 			}
 		})
 	}
