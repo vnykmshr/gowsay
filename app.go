@@ -159,10 +159,21 @@ func runServer() {
 
 	m := api.NewModule()
 
-	http.HandleFunc("/", m.Gowsay)
+	// Legacy Slack endpoint (backward compatibility)
 	http.HandleFunc("/say", m.Gowsay)
 
+	// New API endpoints (with CORS)
+	http.HandleFunc("/api/moo", api.CORS(m.APIMoo))
+	http.HandleFunc("/api/cows", api.CORS(m.APICows))
+	http.HandleFunc("/api/moods", api.CORS(m.APIMoods))
+	http.HandleFunc("/health", api.CORS(api.Health(version)))
+
+	// Root endpoint - for now, same as /say (will be web UI later)
+	http.HandleFunc("/", m.Gowsay)
+
 	fmt.Println(api.GetBanner(version))
+	slog.Info("routes registered",
+		"endpoints", []string{"/", "/say", "/api/moo", "/api/cows", "/api/moods", "/health"})
 
 	// Get port from environment or use default
 	port := os.Getenv("PORT")
