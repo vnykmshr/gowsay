@@ -28,7 +28,7 @@ func TestNewModule(t *testing.T) {
 }
 
 func TestModule_Gowsay(t *testing.T) {
-	cfg := getDefaultConfig()
+	cfg := loadConfig()
 	type fields struct {
 		cfg *Config
 	}
@@ -198,7 +198,7 @@ func TestModule_Gowsay(t *testing.T) {
 }
 
 func TestModule_motd(t *testing.T) {
-	cfg := getDefaultConfig()
+	cfg := loadConfig()
 	type fields struct {
 		cfg *Config
 	}
@@ -283,13 +283,17 @@ func Test_sanitize(t *testing.T) {
 	}
 }
 
-func Test_getDefaultConfig(t *testing.T) {
+func Test_loadConfig(t *testing.T) {
+	// Clear env vars to test defaults
+	os.Unsetenv("GOWSAY_TOKEN")
+	os.Unsetenv("GOWSAY_COLUMNS")
+
 	tests := []struct {
 		name string
 		want Config
 	}{
 		{
-			name: "t1",
+			name: "defaults",
 			want: Config{
 				Server: ServerConfig{
 					Name: "gowsay",
@@ -303,8 +307,8 @@ func Test_getDefaultConfig(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := getDefaultConfig(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("getDefaultConfig() = %v, want %v", got, tt.want)
+			if got := loadConfig(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("loadConfig() = %v, want %v", got, tt.want)
 			}
 		})
 	}

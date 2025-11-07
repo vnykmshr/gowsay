@@ -5,33 +5,39 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
-
-	"gopkg.in/tokopedia/logging.v1"
 )
 
 // NewModule create new module
 func NewModule() *Module {
-	var cfg Config
-	ok := logging.ReadModuleConfig(&cfg, "/etc/gowsay", "gowsay") || logging.ReadModuleConfig(&cfg, "files/etc/gowsay", "gowsay")
-	if !ok {
-		log.Println("failed to read config, loading defaults")
-		cfg = getDefaultConfig()
-	}
-
+	cfg := loadConfig()
 	return &Module{
 		cfg: &cfg,
 	}
 }
 
-func getDefaultConfig() Config {
+func loadConfig() Config {
+	// Load configuration from environment variables
+	token := os.Getenv("GOWSAY_TOKEN")
+	if token == "" {
+		token = "devel"
+	}
+
+	columns := int32(40)
+	if colStr := os.Getenv("GOWSAY_COLUMNS"); colStr != "" {
+		if col, err := strconv.Atoi(colStr); err == nil && col > 0 {
+			columns = int32(col)
+		}
+	}
+
 	return Config{
 		Server: ServerConfig{
 			Name: "gowsay",
 		},
 		App: AppConfig{
-			Token:   "devel",
-			Columns: 40,
+			Token:   token,
+			Columns: columns,
 		},
 	}
 }
