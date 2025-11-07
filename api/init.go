@@ -1,7 +1,6 @@
 package api
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 	"os"
@@ -65,29 +64,21 @@ func (hlm *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(parts) == 1 && (parts[0] == ActionList || parts[0] == ActionHelp) {
-		response := SlackResponse{
+		writeJSON(w, SlackResponse{
 			ResponseType: ResponseEphemeral,
 			Text:         GetUsageString(),
 			Attachments:  []Attachment{{Text: GetHelpString()}},
-		}
-
-		writeJSON(w, response)
+		}, http.StatusOK)
 		return
 	}
 
 	if len(parts) > 0 && parts[0] == ActionSurprise {
 		parts = parts[1:]
-
 		if len(parts) == 0 {
 			parts = []string{cow.RandomMessage()}
 		}
-
-		response := SlackResponse{
-			ResponseType: ResponseInChannel,
-			Text:         cow.Render(parts, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, int(hlm.cfg.App.Columns)),
-		}
-
-		writeJSON(w, response)
+		output := cow.Render(parts, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, int(hlm.cfg.App.Columns))
+		writeJSON(w, SlackResponse{ResponseType: ResponseInChannel, Text: output}, http.StatusOK)
 		return
 	}
 
@@ -127,25 +118,13 @@ func (hlm *Module) Gowsay(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("%s %s %s %s %s", CommandMoo, action, cowName, mood, strings.Join(parts, " "))
-	response := SlackResponse{
-		ResponseType: ResponseInChannel,
-		Text:         cow.Render(parts, cowName, mood, action, int(hlm.cfg.App.Columns)),
-	}
-
-	writeJSON(w, response)
+	output := cow.Render(parts, cowName, mood, action, int(hlm.cfg.App.Columns))
+	writeJSON(w, SlackResponse{ResponseType: ResponseInChannel, Text: output}, http.StatusOK)
 }
 
 func (hlm *Module) motd(w http.ResponseWriter) {
 	motd := cow.Render([]string{cow.RandomMessage()}, cow.RandomCow(), cow.RandomMood(), cow.ActionSay, int(hlm.cfg.App.Columns))
 	_, err := w.Write([]byte(motd))
-	if err != nil {
-		log.Println(err)
-	}
-}
-
-func writeJSON(w http.ResponseWriter, response interface{}) {
-	w.Header().Set(FieldContentType, ValueApplicationJSON)
-	err := json.NewEncoder(w).Encode(response)
 	if err != nil {
 		log.Println(err)
 	}
@@ -158,6 +137,5 @@ func sanitize(s []string) []string {
 			r = append(r, str)
 		}
 	}
-
 	return r
 }

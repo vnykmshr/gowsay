@@ -249,7 +249,7 @@ func Test_writeJSON(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			writeJSON(tt.args.w, tt.args.response)
+			writeJSON(tt.args.w, tt.args.response, http.StatusOK)
 			if got, ok := tt.args.w.Header()[FieldContentType]; !ok || !reflect.DeepEqual(got, []string{ValueApplicationJSON}) {
 				t.Errorf("writeJSON() Header: %s: got: %s, want: %s", FieldContentType, got, []string{ValueApplicationJSON})
 			}

@@ -1,37 +1,42 @@
 package cow
 
-import (
-	"math/rand"
-	"reflect"
-)
+import "math/rand"
 
-var moods map[string]int
+// Mood represents a facial expression configuration
+type Mood struct {
+	Eyes   string
+	Tongue string
+}
 
-func init() {
-	moods = map[string]int{
-		"borg":     1,
-		"dead":     1,
-		"greedy":   1,
-		"paranoid": 1,
-		"stoned":   1,
-		"wired":    1,
-		"young":    1,
-	}
+var moods = map[string]Mood{
+	"borg":     {Eyes: "==", Tongue: "  "},
+	"dead":     {Eyes: "xx", Tongue: "U "},
+	"greedy":   {Eyes: "$$", Tongue: "  "},
+	"paranoid": {Eyes: "@@", Tongue: "  "},
+	"stoned":   {Eyes: "**", Tongue: "U "},
+	"tired":    {Eyes: "--", Tongue: "  "},
+	"wired":    {Eyes: "OO", Tongue: "  "},
+	"young":    {Eyes: "..", Tongue: "  "},
+}
+
+var moodNames = []string{"borg", "dead", "greedy", "paranoid", "stoned", "tired", "wired", "young"}
+
+// GetMood returns the mood configuration for the given name
+func GetMood(name string) (Mood, bool) {
+	mood, ok := moods[name]
+	return mood, ok
 }
 
 // RandomMood returns a random mood name
 func RandomMood() string {
-	keys := reflect.ValueOf(moods).MapKeys()
-	return keys[rand.Intn(len(keys))].Interface().(string)
+	return moodNames[rand.Intn(len(moodNames))]
 }
 
 // ListMoods returns a list of all available mood names
 func ListMoods() []string {
-	names := make([]string, 0, len(moods))
-	for name := range moods {
-		names = append(names, name)
-	}
-	return names
+	result := make([]string, len(moodNames))
+	copy(result, moodNames)
+	return result
 }
 
 // MoodExists checks if a mood with the given name exists

@@ -100,47 +100,38 @@ func (m *Module) APIMoo(w http.ResponseWriter, r *http.Request) {
 	output := cow.Render([]string{req.Text}, req.Cow, req.Mood, req.Action, req.Columns)
 
 	// Return response
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(MooResponse{Output: output})
+	writeJSON(w, MooResponse{Output: output}, http.StatusOK)
 }
 
 // APICows handles /api/cows endpoint - lists all available cows
 func (m *Module) APICows(w http.ResponseWriter, r *http.Request) {
 	cows := cow.List()
 	sort.Strings(cows)
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string][]string{
-		"cows": cows,
-	})
+	writeJSON(w, map[string][]string{"cows": cows}, http.StatusOK)
 }
 
 // APIMoods handles /api/moods endpoint - lists all available moods
 func (m *Module) APIMoods(w http.ResponseWriter, r *http.Request) {
 	moods := cow.ListMoods()
 	sort.Strings(moods)
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string][]string{
-		"moods": moods,
-	})
+	writeJSON(w, map[string][]string{"moods": moods}, http.StatusOK)
 }
 
 // Health handles /health endpoint
 func Health(version string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(HealthResponse{
-			Status:  "ok",
-			Version: version,
-		})
+		writeJSON(w, HealthResponse{Status: "ok", Version: version}, http.StatusOK)
 	}
 }
 
 func writeJSONError(w http.ResponseWriter, message string, statusCode int) {
+	writeJSON(w, ErrorResponse{Error: message}, statusCode)
+}
+
+func writeJSON(w http.ResponseWriter, data interface{}, statusCode int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(ErrorResponse{Error: message})
+	json.NewEncoder(w).Encode(data)
 }
 
 // ServeWeb serves the web UI

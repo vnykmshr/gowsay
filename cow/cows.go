@@ -1,11 +1,18 @@
 package cow
 
-import (
-	"math/rand"
-	"reflect"
-)
+import "math/rand"
 
 var cows map[string]string
+
+var cowNames = []string{
+	"apt", "beavis.zen", "bong", "bud-frogs", "bunny", "calvin", "cheese", "cock", "cower",
+	"daemon", "default", "dragon", "dragon-and-cow", "duck", "elephant", "elephant-in-snake",
+	"eyes", "flaming-sheep", "ghostbusters", "gnu", "head-in", "hellokitty", "kiss", "kitty",
+	"koala", "kosh", "luke-koala", "mech-and-cow", "meow", "milk", "moofasa", "moose",
+	"mutilated", "pony", "pony-smaller", "ren", "sheep", "skeleton", "snowman",
+	"sodomized-sheep", "stegosaurus", "stimpy", "suse", "three-eyes", "turkey", "turtle",
+	"tux", "unipony", "unipony-smaller", "vader", "vader-koala", "www",
+}
 
 func init() {
 	cows = make(map[string]string)
@@ -740,17 +747,14 @@ Elephant inside ASCII snake
 
 // RandomCow returns a random cow name
 func RandomCow() string {
-	keys := reflect.ValueOf(cows).MapKeys()
-	return keys[rand.Intn(len(keys))].Interface().(string)
+	return cowNames[rand.Intn(len(cowNames))]
 }
 
 // List returns a sorted list of all available cow names
 func List() []string {
-	names := make([]string, 0, len(cows))
-	for name := range cows {
-		names = append(names, name)
-	}
-	return names
+	result := make([]string, len(cowNames))
+	copy(result, cowNames)
+	return result
 }
 
 // Exists checks if a cow with the given name exists

@@ -35,13 +35,13 @@ func main() {
 func runCLI() {
 	// Define CLI flags
 	var (
-		cowName    = flag.String("c", "default", "Cow name to use")
-		mood       = flag.String("m", "", "Mood (borg, dead, greedy, paranoid, stoned, wired, young)")
-		think      = flag.Bool("t", false, "Think instead of say")
-		list       = flag.Bool("l", false, "List available cows and moods")
-		random     = flag.Bool("r", false, "Random cow and mood")
-		columns    = flag.Int("w", 40, "Column width for text wrapping")
-		showVer    = flag.Bool("v", false, "Show version")
+		cowName = flag.String("c", "default", "Cow name to use")
+		mood    = flag.String("m", "", "Mood (borg, dead, greedy, paranoid, stoned, wired, young)")
+		think   = flag.Bool("t", false, "Think instead of say")
+		list    = flag.Bool("l", false, "List available cows and moods")
+		random  = flag.Bool("r", false, "Random cow and mood")
+		columns = flag.Int("w", 40, "Column width for text wrapping")
+		showVer = flag.Bool("v", false, "Show version")
 	)
 
 	flag.Usage = func() {

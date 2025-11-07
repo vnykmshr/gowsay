@@ -43,32 +43,18 @@ func Render(text []string, cowName, mood, action string, columns int) string {
 }
 
 // newFace creates a face with the specified cow and mood
-func newFace(cowName, mood string) *Face {
+func newFace(cowName, moodName string) *Face {
 	face := &Face{
 		Eyes:    "oo",
 		Tongue:  "  ",
 		cowfile: cowName,
 	}
 
-	switch mood {
-	case "borg":
-		face.Eyes = "=="
-	case "dead":
-		face.Eyes = "xx"
-		face.Tongue = "U "
-	case "greedy":
-		face.Eyes = "$$"
-	case "paranoid":
-		face.Eyes = "@@"
-	case "stoned":
-		face.Eyes = "**"
-		face.Tongue = "U "
-	case "tired":
-		face.Eyes = "--"
-	case "wired":
-		face.Eyes = "OO"
-	case "young":
-		face.Eyes = ".."
+	if moodName != "" {
+		if mood, ok := GetMood(moodName); ok {
+			face.Eyes = mood.Eyes
+			face.Tongue = mood.Tongue
+		}
 	}
 
 	return face
@@ -110,39 +96,37 @@ func padLines(msgs []string, width int) []string {
 
 // buildBalloon constructs the speech/thought balloon
 func buildBalloon(f *Face, action string, msgs []string, width int) string {
-	var borders []string
 	lineCount := len(msgs)
+	var lines []string
 
+	// Set thoughts connector and determine borders
+	var top, bottom, left, right, middle string
 	if action == ActionThink {
 		f.Thoughts = "o"
-		borders = []string{"(", ")", "(", ")", "(", ")"}
+		top, bottom, left, right, middle = "(", ")", "(", ")", "("
 	} else {
 		f.Thoughts = "\\"
 		if lineCount == 1 {
-			borders = []string{"<", ">"}
+			top, bottom = "<", ">"
 		} else {
-			borders = []string{"/", "\\", "\\", "/", "|", "|"}
+			top, bottom, left, right, middle = "/", "\\", "\\", "/", "|"
 		}
 	}
 
-	var lines []string
-
-	topBorder := " " + strings.Repeat("_", width+2)
-	bottomBorder := " " + strings.Repeat("-", width+2) + "\n"
-
-	lines = append(lines, topBorder)
+	// Build balloon
+	lines = append(lines, " "+strings.Repeat("_", width+2))
 
 	if lineCount == 1 {
-		lines = append(lines, fmt.Sprintf("%s %s %s", borders[0], msgs[0], borders[1]))
+		lines = append(lines, fmt.Sprintf("%s %s %s", top, msgs[0], bottom))
 	} else {
-		lines = append(lines, fmt.Sprintf("%s %s %s", borders[0], msgs[0], borders[1]))
+		lines = append(lines, fmt.Sprintf("%s %s %s", top, msgs[0], bottom))
 		for i := 1; i < lineCount-1; i++ {
-			lines = append(lines, fmt.Sprintf("%s %s %s", borders[4], msgs[i], borders[5]))
+			lines = append(lines, fmt.Sprintf("%s %s %s", middle, msgs[i], middle))
 		}
-		lines = append(lines, fmt.Sprintf("%s %s %s", borders[2], msgs[lineCount-1], borders[3]))
+		lines = append(lines, fmt.Sprintf("%s %s %s", left, msgs[lineCount-1], right))
 	}
 
-	lines = append(lines, bottomBorder)
+	lines = append(lines, " "+strings.Repeat("-", width+2)+"\n")
 	return strings.Join(lines, "\n")
 }
 
