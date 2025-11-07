@@ -52,14 +52,6 @@ type Module struct {
 	cfg *Config
 }
 
-// face the face
-type face struct {
-	Eyes     string
-	Tongue   string
-	Thoughts string
-	cowfile  string
-}
-
 // SlackResponse the slack response
 type SlackResponse struct {
 	ResponseType string       `json:"response_type,omitempty"`

@@ -3,12 +3,12 @@
 Implementation of cowsay in Go
 
 **Features:**
-- 🖥️ Command-line tool (like original cowsay)
-- 🌐 HTTP API server for Slack integration
-- 🐮 41 different cows
-- 😀 7 moods (borg, dead, greedy, paranoid, stoned, wired, young)
+- Command-line tool (like original cowsay)
+- HTTP API server for Slack integration
+- 41 different cows
+- 7 moods (borg, dead, greedy, paranoid, stoned, wired, young)
 
-**Status:** gowsay 2.0 - CLI tool ✅, Web UI ✅, JSON API ✅
+**Status:** gowsay 2.0 - CLI tool, Web UI, JSON API
 
 ## Usage
 
@@ -51,12 +51,12 @@ PORT=8080 ./bin/gowsay serve
 ```
 
 **Features:**
-- 🎨 Modern, polished UI with dark mode
-- 🐄 Choose from 41 different cows
-- 😊 Apply moods (borg, dead, greedy, etc.)
-- 🎲 Random button for surprise cows
-- 📋 Copy output to clipboard
-- 📱 Mobile responsive
+- Modern, polished UI with dark mode
+- Choose from 41 different cows
+- Apply moods (borg, dead, greedy, etc.)
+- Random button for surprise cows
+- Copy output to clipboard
+- Mobile responsive
 
 ### HTTP API
 
@@ -158,19 +158,12 @@ Raspberry Pi:
 GOOS=linux GOARCH=arm GOARM=5 go build -o bin/gowsay-pi
 ```
 
-### Slack commands
-### Sample Request
-```
-curl --location --request POST 'https://gowsay.vnykmshr.com/say' \
-  --header 'Content-Type: application/x-www-form-urlencoded' \
-  --data-urlencode 'token=xxx' \
-  --data-urlencode 'text=Puff! Puff!!'
-```
+### Slack Integration
 
-### Sample Response
-```
-{
-  "response_type": "in_channel",
-  "text": "```\n ________\n/ Puff!  \\\n\\ Puff!! /\n --------\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||\n\n```\n"
-}
+Example request:
+```bash
+curl -X POST 'https://gowsay.vnykmshr.com/say' \
+  -H 'Content-Type: application/x-www-form-urlencoded' \
+  --data-urlencode 'token=xxx' \
+  --data-urlencode 'text=Hello World'
 ```
