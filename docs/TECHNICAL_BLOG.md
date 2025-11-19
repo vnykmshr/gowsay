@@ -513,7 +513,7 @@ The full source code is available on GitHub with comprehensive tests and documen
 ---
 
 **Technical Specifications**:
-- Language: Go 1.21+
+- Language: Go 1.23+
 - Dependencies: 2 (go-runewidth, go-wordwrap)
 - Binary Size: 10.8MB
 - Test Coverage: 89.7% API, 97.6% core
