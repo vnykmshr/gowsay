@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ['1.23', '1.24']
+        go-version: ['1.24']
 
     steps:
     - name: Checkout code
@@ -55,7 +55,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v6
       with:
-        go-version: '1.23'
+        go-version: '1.24'
 
     - name: Check formatting
       run: |
@@ -71,7 +71,6 @@ jobs:
   security:
     name: Security
     runs-on: ubuntu-latest
-    continue-on-error: true  # Known Go stdlib vulnerabilities, waiting for 1.24 release
 
     steps:
     - name: Checkout code
@@ -80,7 +79,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v6
       with:
-        go-version: '1.23'
+        go-version: '1.24'
 
     - name: Run govulncheck
       run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
@@ -99,7 +98,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v6
       with:
-        go-version: '1.23'
+        go-version: '1.24'
 
     - name: Build binary
       run: |

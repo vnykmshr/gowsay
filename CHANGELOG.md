@@ -43,7 +43,7 @@ Version 2.0 represents a complete refactoring focused on simplicity, maintainabi
 - Migrated to `log/slog` for structured logging
 - Extracted core rendering logic to dedicated `cow/` package
 - Refactored HTTP handlers to `api/` package
-- Modernized codebase to Go 1.23+ standards
+- Modernized codebase to Go 1.24+ standards
 - Improved code readability and organization
 - Optimized text wrapping and balloon building algorithms
 
